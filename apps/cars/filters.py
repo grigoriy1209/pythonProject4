@@ -1,38 +1,19 @@
-from django.db.models import QuerySet
-from django.http import QueryDict
-from rest_framework.exceptions import ValidationError
+from django_filters import rest_framework as filters
 
-from apps.cars.models import CarModel
+from apps.cars.choices import BodyTypeChoice
 
 
-def cars_filtered_queryset(query: QueryDict) -> QuerySet:
-    qs = CarModel.objects.all()
-
-    for key, value in query.items():
-        match key:
-            case 'price_gt':
-                qs = qs.filter(price__gt=value)
-            case 'price_gte':
-                qs = qs.filter(price__gte=value)
-            case 'price_lt':
-                qs = qs.filter(price__lt=value)
-            case 'price_lte':
-                qs = qs.filter(price__lte=value)
-            case 'price_eq':
-                qs = qs.filter(price=value)
-            case 'model':
-                qs = qs.filter(model=value)
-            case 'model':
-                qs = qs.filter(model__in=value)
-            case 'model':
-                qs = qs.filter(model__icontains=value)
-            case 'model':
-                qs = qs.filter(model__contains=value)
-            case 'model':
-                qs = qs.filter(model__iendswith=value)
-
-            case _:
-                raise ValidationError(f"Invalid value for {key}")
-    return qs
-
-
+class CarFilter(filters.FilterSet):
+    lt = filters.NumberFilter(field_name='year', lookup_expr='lt')
+    range = filters.NumberFilter(field_name='year', lookup_expr='range')  # min-max
+    year_in = filters.BaseInFilter(field_name='year',)
+    body_type = filters.ChoiceFilter(field_name='body_type', choices=BodyTypeChoice.choices)
+    model_start = filters.CharFilter(field_name='model', lookup_expr='startswith')
+    order = filters.OrderingFilter(
+        fields=(
+            'id',
+            'body_type',
+            'model',
+            'price',
+        )
+    )
