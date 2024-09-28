@@ -23,4 +23,3 @@ class AutoParkAddCarView(GenericAPIView):
         serializer.save(auto_park=auto_park)
         park_serializer = AutoParkSerializer(auto_park)
         return Response(park_serializer.data, status=status.HTTP_201_CREATED)
-        

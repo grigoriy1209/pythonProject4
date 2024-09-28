@@ -13,12 +13,20 @@ from apps.cars.regex import CarRegex
 
 class CarModel(BaseModel):
     class Meta:
-        db_table = 'cars'
+        db_table = "cars"
 
     # model = models.CharField(max_length=100, unique=True)
     # model = models.CharField(max_length=100, blank=True)
-    model = models.CharField(max_length=50,validators=[V.RegexValidator(*CarRegex.MODEL.value)])
+    model = models.CharField(
+        max_length=50, validators=[V.RegexValidator(*CarRegex.MODEL.value)]
+    )
     body_type = models.CharField(max_length=10, choices=BodyTypeChoice.choices)
-    year = models.IntegerField(validators=[MinValueValidator(1990), MaxValueValidator(datetime.now().year)])
-    price = models.IntegerField(validators=[MinValueValidator(100), MaxValueValidator(1_000_000)])
-    auto_park = models.ForeignKey(AutoParkModel, on_delete=models.CASCADE,related_name='cars')
+    year = models.IntegerField(
+        validators=[MinValueValidator(1990), MaxValueValidator(datetime.now().year)]
+    )
+    price = models.IntegerField(
+        validators=[MinValueValidator(100), MaxValueValidator(1_000_000)]
+    )
+    auto_park = models.ForeignKey(
+        AutoParkModel, on_delete=models.CASCADE, related_name="cars"
+    )

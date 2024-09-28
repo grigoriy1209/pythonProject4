@@ -1,5 +1,10 @@
-from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView, ListCreateAPIView, \
-    RetrieveUpdateDestroyAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    GenericAPIView,
+    ListAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
 from rest_framework.response import Response
 
 from .filters import CarFilter
