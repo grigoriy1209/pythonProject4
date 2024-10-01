@@ -29,4 +29,4 @@ class CarModel(BaseModel):
     auto_park = models.ForeignKey(
         AutoParkModel, on_delete=models.CASCADE, related_name="cars"
     )
-    object = CarManager()
+    objects = CarManager()
