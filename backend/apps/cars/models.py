@@ -4,6 +4,7 @@ from django.core import validators as V
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+from apps.managers import CarManager
 from core.models import BaseModel
 
 from apps.auto_parks.models import AutoParkModel
@@ -15,8 +16,6 @@ class CarModel(BaseModel):
     class Meta:
         db_table = "cars"
 
-    # model = models.CharField(max_length=100, unique=True)
-    # model = models.CharField(max_length=100, blank=True)
     model = models.CharField(
         max_length=50, validators=[V.RegexValidator(*CarRegex.MODEL.value)]
     )
@@ -30,3 +29,4 @@ class CarModel(BaseModel):
     auto_park = models.ForeignKey(
         AutoParkModel, on_delete=models.CASCADE, related_name="cars"
     )
+    object = CarManager()
