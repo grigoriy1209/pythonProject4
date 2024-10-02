@@ -1,11 +1,6 @@
 from rest_framework import serializers
 
-# from better_profanity import profanity
-
 from .models import CarModel
-
-# custom_words = ["Bich", "Petux"]
-# profanity.load_censor_words(custom_words)
 
 
 class CarSerializer(serializers.ModelSerializer):
@@ -24,8 +19,4 @@ class CarSerializer(serializers.ModelSerializer):
     def validate(self, car):
         if car["model"] == "Kia":
             raise serializers.ValidationError({"model": "Kia is not available"})
-        # if profanity.contains_profanity(car["model"]):
-        #     raise serializers.ValidationError(
-        #         {"model": "The model name contains inappropriate language"}
-        #     )
         return car

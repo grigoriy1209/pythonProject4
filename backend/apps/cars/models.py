@@ -4,7 +4,7 @@ from django.core import validators as V
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from apps.managers import CarManager
+from .managers import CarManager
 from core.models import BaseModel
 
 from apps.auto_parks.models import AutoParkModel
