@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, GenericAPIView
 from django.contrib.auth import get_user_model
@@ -5,12 +6,27 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
 
 from apps.users.serializers import UserSerializer
 
 # from core.dataclasses.user_dataclass import User
 
 UserModel = get_user_model()
+
+
+# class UserListCreateViewSet(ViewSet):
+#
+#     def list(self, request):
+#         queryset = UserModel.objects.all()
+#         serializer = UserSerializer(queryset, many=True)
+#         return Response(serializer.data)
+#
+#     def retrieve(self, request, pk=None):
+#         queryset = UserModel.objects.all()
+#         user = get_object_or_404(queryset, pk=pk)
+#         serializer = UserSerializer(queryset, many=True)
+#         return Response(serializer.data)
 
 
 class UserListCreateAPIView(ListCreateAPIView):
