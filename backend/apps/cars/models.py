@@ -4,12 +4,13 @@ from django.core import validators as V
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from .managers import CarManager
 from core.models import BaseModel
 
 from apps.auto_parks.models import AutoParkModel
 from apps.cars.choices import BodyTypeChoice
 from apps.cars.regex import CarRegex
+
+from .managers import CarManager
 from .services import upload_car_photo
 
 
@@ -30,5 +31,12 @@ class CarModel(BaseModel):
     auto_park = models.ForeignKey(
         AutoParkModel, on_delete=models.CASCADE, related_name="cars"
     )
-    photo = models.ImageField(upload_to=upload_car_photo, blank=True)
     objects = CarManager()
+
+
+class CarPhotoModel(BaseModel):
+    class Meta:
+        db_table = "car_photos"
+
+    photo = models.ImageField(upload_to=upload_car_photo, blank=True)
+    car = models.ForeignKey(CarModel, on_delete=models.CASCADE, related_name="photos")
