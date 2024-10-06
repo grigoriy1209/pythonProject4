@@ -20,3 +20,13 @@ class CarSerializer(serializers.ModelSerializer):
         if car["model"] == "Kia":
             raise serializers.ValidationError({"model": "Kia is not available"})
         return car
+
+
+class CarAddPhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CarModel
+        fields = ('photo',)
+        extra_kwargs = {
+            'photo': {
+                       'required': True}
+        }

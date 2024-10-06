@@ -10,6 +10,7 @@ from core.models import BaseModel
 from apps.auto_parks.models import AutoParkModel
 from apps.cars.choices import BodyTypeChoice
 from apps.cars.regex import CarRegex
+from .services import upload_car_photo
 
 
 class CarModel(BaseModel):
@@ -29,4 +30,5 @@ class CarModel(BaseModel):
     auto_park = models.ForeignKey(
         AutoParkModel, on_delete=models.CASCADE, related_name="cars"
     )
+    photo = models.ImageField(upload_to=upload_car_photo, blank=True)
     objects = CarManager()

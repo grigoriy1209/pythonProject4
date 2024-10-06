@@ -15,29 +15,16 @@ from apps.users.serializers import UserSerializer
 UserModel = get_user_model()
 
 
-# class UserListCreateViewSet(ViewSet):
-#
-#     def list(self, request):
-#         queryset = UserModel.objects.all()
-#         serializer = UserSerializer(queryset, many=True)
-#         return Response(serializer.data)
-#
-#     def retrieve(self, request, pk=None):
-#         queryset = UserModel.objects.all()
-#         user = get_object_or_404(queryset, pk=pk)
-#         serializer = UserSerializer(queryset, many=True)
-#         return Response(serializer.data)
-
-
 class UserListCreateAPIView(ListCreateAPIView):
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [AllowAny]
 
 
 class UserMeView(GenericAPIView):
     serializer_class = UserSerializer
     queryset = UserModel.objects.all()
-    permission_classes = [AllowAny,]
+    permission_classes = [AllowAny, ]
 
     def get(self, *args, **kwargs):
         user = self.request.user

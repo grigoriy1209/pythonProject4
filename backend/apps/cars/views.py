@@ -3,14 +3,14 @@ from rest_framework.generics import (
     GenericAPIView,
     ListAPIView,
     ListCreateAPIView,
-    RetrieveUpdateDestroyAPIView,
+    RetrieveUpdateDestroyAPIView, UpdateAPIView,
 )
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .filters import CarFilter
 from .models import CarModel
-from .serializers import CarSerializer
+from .serializers import CarSerializer, CarAddPhotoSerializer
 
 
 class CarListView(ListAPIView):
@@ -25,3 +25,16 @@ class CarListView(ListAPIView):
 class CarRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     queryset = CarModel.objects.all()
     serializer_class = CarSerializer
+
+
+class CarAddPhotoView(UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = CarAddPhotoSerializer
+    queryset = CarModel.objects.all()
+    http_method_names = ('patch',)
+
+    def perform_update(self, serializer):
+        car = self.get_object()
+        car.photo.delete()
+        super().perform_update(serializer)
+
