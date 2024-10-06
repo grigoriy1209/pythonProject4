@@ -1,12 +1,13 @@
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, GenericAPIView
-from django.contrib.auth import get_user_model
 
-from django.contrib.auth import get_user_model
+from rest_framework import status
+from rest_framework.generics import GenericAPIView, ListCreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+
+from core.services.email_service import EmailService
 
 from apps.users.serializers import UserSerializer
 
@@ -90,3 +91,11 @@ class AdminToUserView(GenericAPIView):
             user.save()
         serializer = UserSerializer(user, )
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class TestEmailView(GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, *args, **kwargs):
+        EmailService.send_test()
+        return Response(status=status.HTTP_200_OK)
