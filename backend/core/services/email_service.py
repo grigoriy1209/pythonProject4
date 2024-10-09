@@ -6,9 +6,14 @@ from django.template.loader import get_template
 from core.dataclasses.user_dataclass import User
 from core.services.jwt_service import ActivateToken, JwtService, RecoverToken
 
+from apps.users.models import UserModel
+
+from configs.celery import app
+
 
 class EmailService:
     @staticmethod
+    @app.task
     def __send_email(to: str, template_name: str, context: dict, subject: str) -> None:
         template = get_template(template_name)
         html_content = template.render(context)
@@ -35,7 +40,7 @@ class EmailService:
     def recovery_password(cls, user: User):
         token = JwtService.create_token(user, RecoverToken)
         url = f'http://localhost:3000/recovery/{token}'
-        cls.__send_email(
+        cls.__send_email.delay(
             user.email,
             'recovery_password.html',
             {
@@ -44,3 +49,14 @@ class EmailService:
             },
             'Recovery Password'
         )
+
+    @staticmethod
+    @app.task
+    def spam():
+        for user in UserModel.objects.all():
+            EmailService.__send_email(
+                user.email,
+                'spam.html',
+                {'name': user.profile.name},
+                'Spam email'
+            )

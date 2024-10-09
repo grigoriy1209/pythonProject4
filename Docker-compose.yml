@@ -31,3 +31,18 @@ services:          # Описує секцію з сервісами (конте
       - ./client:/usr/share/nginx/html               # Монтує локальну директорію `./client` в `/usr/share/nginx/html` для збереження статичних файлів (HTML, CSS, JS)
       - ./nginx.conf:/etc/nginx/conf.d/default.conf  # Використовує кастомний файл конфігурації Nginx, монтується в контейнер замість дефолтного
     restart: on-failure  # Перезапускається лише в разі збоїв
+
+  redis:
+    image: redis:alpine
+
+  celery:
+    build:
+      context: .
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    restart: on-failure
+    command: >
+      sh -c "celery -A configs worker -l info -B"
+  #     sh -c "celery -A configs worker -l info"
