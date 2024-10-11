@@ -5,7 +5,10 @@ from rest_framework import status
 from rest_framework.generics import GenericAPIView, ListCreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ViewSet
+
+from drf_yasg.utils import swagger_auto_schema
 
 from core.services.email_service import EmailService
 
@@ -35,6 +38,7 @@ class UserMeView(GenericAPIView):
 
 class UserBanView(GenericAPIView):
     queryset = UserModel.objects.all()
+    serializer_class = UserSerializer
 
     def get_queryset(self):
         return super().get_queryset().exclude(id=self.request.user.id)
@@ -51,9 +55,16 @@ class UserBanView(GenericAPIView):
 class UserUnBanView(GenericAPIView):
     queryset = UserModel.objects.all()
 
+    def get_serializer_class(self):
+        pass
+
+    # serializer_class = UserSerializer
+
     def get_queryset(self):
         return super().get_queryset().exclude(id=self.request.user.id)
 
+    # @swagger_auto_schema(request_body=Serializer)
+    @swagger_auto_schema(responses={status.HTTP_200_OK: UserSerializer()})
     def patch(self, *args, **kwargs):
         user = self.get_object()
         if not user.is_active:

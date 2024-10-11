@@ -37,7 +37,7 @@ class RecoveryPasswordRequestView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = get_object_or_404(UserModel, **serializer.data)
         EmailService.recovery_password(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)
 
 
 class RecoveryPasswordView(GenericAPIView):

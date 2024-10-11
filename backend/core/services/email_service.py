@@ -50,13 +50,13 @@ class EmailService:
             'Recovery Password'
         )
 
-    @staticmethod
-    @app.task
-    def spam():
-        for user in UserModel.objects.all():
-            EmailService.__send_email(
-                user.email,
-                'spam.html',
-                {'name': user.profile.name},
-                'Spam email'
-            )
+    # @staticmethod
+    # @app.task
+    # def spam():
+    #     for user in UserModel.objects.all():
+    #         EmailService.__send_email(
+    #             user.email,
+    #             'spam.html',
+    #             {},
+    #             'Spam email'
+    #         )

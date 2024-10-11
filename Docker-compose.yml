@@ -1,36 +1,37 @@
-services:          # Описує секцію з сервісами (контейнерами), що будуть запущені
-  app:             # Сервіс для Django додатку (back-end)
-    build:         # Будує образ Docker для сервісу "app"
-      context: .   # Вказує, що Dockerfile знаходиться в поточній директорії
-    volumes:       # Описує томи (директорії) для монтування між хостом і контейнером
-      - ./backend:/app  # Монтує локальну директорію `./backend` у контейнер за шляхом `/app`
-    env_file:           # Вказує файл зі змінними середовища для налаштування контейнера
-      - .env            # Файл `.env`, в якому зберігаються змінні для налаштування, наприклад, доступ до бази даних
-    ports:              # Прокидання портів з контейнера на хост-машину
-      - "8888:8000"     # Прокидує порт 8000 з контейнера на порт 8888 хоста (для доступу до Django)
-    restart: on-failure  # Контейнер перезапускається тільки в разі збоїв (не при нормальному завершенні)
-    command:            # Команда для запуску сервісу після створення контейнера
+services:
+  app:
+    build:
+      context: .
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+#    ports:
+#      - "8888:8000"
+    restart: on-failure
+    command:
       sh -c "python manage.py wait_db && python manage.py runserver 0.0.0.0:8000"
-    # Виконує bash команду: спочатку чекає підключення до бази даних (wait_db), потім запускає Django сервер (runserver)
 
-  db:                  # Сервіс для бази даних MySQL
-    image: mysql:8     # Використовується офіційний Docker-образ MySQL версії 8
-    env_file:          # Використовує той самий файл .env для конфігурації, що й сервіс "app"
-      - .env           # Змінні середовища, як-от користувач бази даних, пароль, ім'я бази даних
-    volumes:           # Описує томи для зберігання даних бази
-      - ./mysql_db:/var/lib/mysql  # Монтує локальну директорію `./mysql_db` для збереження даних MySQL у контейнері
-    ports:                    # Прокидання портів для доступу до бази даних (закоментовано)
-          - "3307:3306"           # Прокидує порт 3306 MySQL з контейнера на порт 3333 на хості (щоб уникнути конфліктів з іншими MySQL сервісами)
-    restart: on-failure            # Контейнер перезапускається тільки в разі збоїв
 
-  web:                         # Сервіс для веб-сервера Nginx (front-end)
-    image: nginx:alpine        # Використовується офіційний легкий Docker-образ Nginx на базі Alpine Linux
-    ports:                     # Прокидує порти для доступу до Nginx
-      - "80:80"                # Прокидує порт 80 з контейнера на порт 80 хост-машини для доступу до веб-контенту через HTTP
-    volumes:                   # Описує томи для передачі файлів
-      - ./client:/usr/share/nginx/html               # Монтує локальну директорію `./client` в `/usr/share/nginx/html` для збереження статичних файлів (HTML, CSS, JS)
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf  # Використовує кастомний файл конфігурації Nginx, монтується в контейнер замість дефолтного
-    restart: on-failure  # Перезапускається лише в разі збоїв
+  db:
+    image: mysql:8
+    env_file:
+      - .env
+    volumes:
+      - ./mysql_db:/var/lib/mysql
+    ports:
+          - "3307:3306"
+    restart: on-failure
+
+  web:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./client:/usr/share/nginx/html
+      - ./backend/static:/usr/share/nginx/doc
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    restart: on-failure
 
   redis:
     image: redis:alpine
@@ -44,5 +45,5 @@ services:          # Описує секцію з сервісами (конте
       - .env
     restart: on-failure
     command: >
-      sh -c "celery -A configs worker -l info -B"
-  #     sh -c "celery -A configs worker -l info"
+       sh -c "celery -A configs worker -l info"
+#      sh -c "celery -A configs worker -l info -B"

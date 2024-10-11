@@ -1,15 +1,29 @@
+from django.utils.decorators import method_decorator
+
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView, ListCreateAPIView, \
-    RetrieveUpdateDestroyAPIView, UpdateAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    GenericAPIView,
+    ListAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+    UpdateAPIView,
+)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+
+from drf_yasg.utils import swagger_auto_schema
 
 from .filters import CarFilter
 from .models import CarModel
 from .serializers import CarAddPhotoSerializer, CarSerializer
 
 
+@method_decorator(name='get', decorator=swagger_auto_schema(security=[]))
 class CarListView(ListAPIView):
+    """
+        Show all cars
+    """
     queryset = CarModel.objects.all()
     # queryset = CarModel.objects.less_than_year(2023).only_audi()
     serializer_class = CarSerializer
@@ -18,7 +32,21 @@ class CarListView(ListAPIView):
     permission_classes = (AllowAny,)
 
 
+@method_decorator(name='get', decorator=swagger_auto_schema(security=[]))
+@method_decorator(name='put', decorator=swagger_auto_schema(security=[]))
+@method_decorator(name='patch', decorator=swagger_auto_schema(security=[]))
+@method_decorator(name='delete', decorator=swagger_auto_schema(security=[]))
 class CarRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    """"
+    get:
+        Get car id details
+    put:
+        Full Update car id details
+    patch:
+        Partial Update car id details
+    delete:
+        Delete car id
+    """
     queryset = CarModel.objects.all()
     serializer_class = CarSerializer
 
@@ -38,7 +66,7 @@ class CarAddPhotosView(CreateAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = CarModel.objects.all()
 
-    def put(self,  *args, **kwargs):
+    def put(self, *args, **kwargs):
         files = self.request.FILES
         car = self.get_object()
         for index in files:
@@ -47,4 +75,3 @@ class CarAddPhotosView(CreateAPIView):
             serializer.save(car=car)
         car_serializer = CarSerializer(car)
         return Response(car_serializer.data, status=status.HTTP_200_OK)
-
