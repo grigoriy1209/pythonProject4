@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from core.dataclasses.user_dataclass import User
 from core.services.email_service import EmailService
-from core.services.jwt_service import ActivateToken, JwtService, RecoverToken
+from core.services.jwt_service import ActivateToken, JwtService, RecoverToken, SocketToken
 
 from apps.auth.serializers import EmailSerializer, PasswordSerializer
 from apps.users.serializers import UserSerializer
@@ -53,3 +53,11 @@ class RecoveryPasswordView(GenericAPIView):
         user.set_password(serializer.data['password'])
         user.save()
         return Response({'detail': 'Your password has been reset'}, status=status.HTTP_200_OK)
+
+
+class SocketTokenView(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, *args, **kwargs):
+        token = JwtService.create_token(user=self.request.user, token_class=SocketToken)
+        return Response({"token": str(token)}, status=status.HTTP_200_OK)
