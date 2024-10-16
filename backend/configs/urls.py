@@ -39,7 +39,7 @@ urlpatterns = [
     path("api/users", include("apps.users.urls")),
     path("api/auth", include("apps.auth.urls")),
     path("api/doc", schema_view.with_ui('swagger', cache_timeout=0), name='documentation'),
-    # path('api/redoc', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('api/redoc', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
 ]
 
