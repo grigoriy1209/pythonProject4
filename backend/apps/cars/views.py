@@ -20,7 +20,7 @@ from .serializers import CarAddPhotoSerializer, CarSerializer
 
 
 @method_decorator(name='get', decorator=swagger_auto_schema(security=[]))
-class CarListView(ListAPIView):
+class CarListCreateView(ListCreateAPIView):
     """
         Show all cars
     """
@@ -30,6 +30,10 @@ class CarListView(ListAPIView):
     pagination_class = None
     filterset_class = CarFilter
     permission_classes = (AllowAny,)
+
+    def perform_create(self, serializer):
+        serializer.save(auto_park_id=1)
+        super().perform_create(serializer)
 
 
 @method_decorator(name='get', decorator=swagger_auto_schema(security=[]))

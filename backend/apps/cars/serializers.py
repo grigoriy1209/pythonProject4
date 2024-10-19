@@ -29,7 +29,7 @@ class CarSerializer(serializers.ModelSerializer):
             "updated_at",
         )
 
-    def validate(self, car):
-        if car["model"] == "Kia":
-            raise serializers.ValidationError({"model": "Kia is not available"})
-        return car
+    # def validate(self, car):
+    #     if car["model"] == "Kia":
+    #         raise serializers.ValidationError({"model": "Kia is not available"})
+    #     return car
