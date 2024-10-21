@@ -9,7 +9,7 @@ from rest_framework.generics import (
     RetrieveUpdateDestroyAPIView,
     UpdateAPIView,
 )
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from drf_yasg.utils import swagger_auto_schema
@@ -29,7 +29,7 @@ class CarListCreateView(ListCreateAPIView):
     serializer_class = CarSerializer
     pagination_class = None
     filterset_class = CarFilter
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def perform_create(self, serializer):
         serializer.save(auto_park_id=1)

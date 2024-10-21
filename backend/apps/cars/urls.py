@@ -3,7 +3,7 @@ from django.urls import path
 from .views import CarAddPhotosView, CarListCreateView, CarRetrieveUpdateDestroyView
 
 urlpatterns = [
-    path("", CarListCreateView.as_view(), name="car_list"),
+    path("", CarListCreateView.as_view(), name="car_create_list"),
     path(
         "/<int:pk>",
         CarRetrieveUpdateDestroyView.as_view(),
