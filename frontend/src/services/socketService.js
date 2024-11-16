@@ -7,7 +7,7 @@ const baseURL = 'ws://testdrf.us-east-1.elasticbeanstalk.com/api'
 const socketService = async ()=> {
     const {data:{token}} = await authService.getSocketToken();
     return{
-        chat:(room)=>new W3cwebsocket(`${baseURL}/chat/${room}/?token=${token}`),
+        chat:(room)=> new W3cwebsocket(`${baseURL}/chat/${room}/?token=${token}`),
         cars:()=> new W3cwebsocket(`${baseURL}/cars/?token=${token}`)
     }
 }
